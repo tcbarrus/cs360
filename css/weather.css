@@ -1,0 +1,14 @@
+body{
+	background-color: #EFF6FD;
+	width: 100%;
+}
+
+.wrapper{
+	float: none;
+	margin: 0px auto;
+	background-color: white;
+}
+
+.navbar{
+	background-color: #325D82;
+}
