@@ -3,12 +3,79 @@ body{
 	width: 100%;
 }
 
-.wrapper{
-	float: none;
-	margin: 0px auto;
-	background-color: white;
+/*@media (min-width: 768px){*/
+	.wrapper{
+		float: none;
+		margin: 250px auto 0px;
+		background-color: white;
+		/*min-height: 100vh;*/
+		box-shadow: 0px 0px 10px #585858;
+	}
+/*}*/
+
+@media (min-width: 992px){
+	.wrapper{
+		margin: 50px auto 0px;
+	}
+}
+
+.footer{
+	background-color: #5A5A5A;
+	min-height: 50px;
+}
+
+.footer h5{
+	color: #A9A9A9;
 }
 
 .navbar{
 	background-color: #325D82;
+}
+
+.navbar div.container{
+	padding: 0;
+}
+
+.navbar li{
+	line-height: 50px;
+	text-align: center;
+	text-transform: uppercase;
+	cursor: pointer;
+	padding: 0;
+}
+
+.navbar li > a:hover, .navbar li > a.active{
+	background-color: #C7DAEA;
+	color: black;
+}
+
+.navbar li > a{
+	padding: 0;
+	color: white;
+}
+
+table{
+	width: 100%;
+}
+
+th, td{
+	padding: 0px 10px;
+}
+
+.quality{
+	border-radius: 50%;
+	padding-top: 8.333333333%;
+	background-color: yellow;
+}
+
+#profile{
+	width: 100%;
+}
+
+input, input[type=checkbox]{
+	margin: 15px 10px 15px 0;
+}
+
+div.embed-responsive{
+	margin-bottom: 20px;
 }
