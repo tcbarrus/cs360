@@ -207,10 +207,10 @@ int main(int argc, char* argv[])
                 }
                 if(dp->d_type == 0x8){
                     //Is file
-                    sprintf(pBuffer, "<tr><td><a href=\"%s%2$s\">%2$s</a></td></td>", path, dp->d_name);
+                    sprintf(pBuffer, "<tr><td><a href=\"%s%s\">%s</a></td></td>", path, dp->d_name, dp->d_name);
                 }
                 else{
-                    sprintf(pBuffer,"<tr><td><a href=\"%s%2$s/\">%2$s</a></td></td>", path, dp->d_name);
+                    sprintf(pBuffer,"<tr><td><a href=\"%s%s/\">%s</a></td></td>", path, dp->d_name, dp->d_name);
                 }
                 //TODO dp->d_type to check if is directory
                 // sprintf(pBuffer, "<tr>\
