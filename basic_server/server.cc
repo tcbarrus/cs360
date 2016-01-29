@@ -218,9 +218,6 @@ int main(int argc, char* argv[])
                 else{
                     sprintf(pBuffer,"<tr><td><a href=\"%s%s/\">%s</a></td></td>", path, dp->d_name, dp->d_name);
                 }
-                //TODO dp->d_type to check if is directory
-                // sprintf(pBuffer, "<tr>\
-                //     <td><a href=\"%1$s\">%1$s/</a></td></tr>", dp->d_name);
                 write(hSocket, pBuffer, strlen(pBuffer));
             }
             sprintf(pBuffer+strlen(pBuffer), "</tbody></table></html>");
@@ -231,13 +228,13 @@ int main(int argc, char* argv[])
         //TODO: If index exists, return index
 
         memset(pBuffer, 0, sizeof(pBuffer));
+        // linger lin;
+        // unsigned int y=sizeof(lin);
+        // lin.l_onoff=1;
+        // lin.l_linger=10;
+        // setsockopt(hSocket,SOL_SOCKET, SO_LINGER,&lin,sizeof(lin));
+        // shutdown(hSocket, SHUT_RDWR);
         
-        linger lin;
-        unsigned int y=sizeof(lin);
-        lin.l_onoff=1;
-        lin.l_linger=10;
-        setsockopt(hSocket,SOL_SOCKET, SO_LINGER,&lin,sizeof(lin));
-        shutdown(hSocket, SHUT_RDWR);
         printf("\nClosing the socket");
         /* close socket */
         if(close(hSocket) == SOCKET_ERROR){
