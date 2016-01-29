@@ -161,9 +161,9 @@ int main(int argc, char* argv[])
         extractRequest(pBuffer, path);
         printf("PATH: %s\n", path);
         //Parse out leading /
-        memcpy(path, &path[1], sizeof(path) - 1);
-        if(strlen(path) == 0)
-            strcpy(path, argv[2]);
+        // memcpy(path, &path[1], sizeof(path) - 1);
+        // if(strlen(path) == 0)
+        //     strcpy(path, argv[2]);
         if(stat(path, &filestat)) {
             printf("ERROR in stat\n");
         }
@@ -201,13 +201,20 @@ int main(int argc, char* argv[])
                 <tr><th valign=\"top\">Name</th></tr>", path);
             write(hSocket, pBuffer, strlen(pBuffer));
             while ((dp = readdir(dirp)) != NULL){
+                memset(pBuffer, 0, sizeof(pBuffer));
                 if(strcmp(dp->d_name, "index.html") == 0){
                     //TODO: return index.html
                 }
+                if(dp->d_type == 0x8){
+                    //Is file
+                    sprintf(pBuffer, "<tr><td><a href=\"%s%2$s\">%2$s</a></td></td>", path, dp->d_name);
+                }
+                else{
+                    sprintf(pBuffer,"<tr><td><a href=\"%s%2$s/\">%2$s</a></td></td>", path, dp->d_name);
+                }
                 //TODO dp->d_type to check if is directory
-                memset(pBuffer, 0, sizeof(pBuffer));
-                sprintf(pBuffer, "<tr>\
-                    <td><a href=\"%1$s\">%1$s/</a></td></tr>", dp->d_name);
+                // sprintf(pBuffer, "<tr>\
+                //     <td><a href=\"%1$s\">%1$s/</a></td></tr>", dp->d_name);
                 write(hSocket, pBuffer, strlen(pBuffer));
             }
             sprintf(pBuffer+strlen(pBuffer), "</tbody></table></html>");
