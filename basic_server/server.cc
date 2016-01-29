@@ -194,7 +194,8 @@ int main(int argc, char* argv[])
         }
         if(S_ISDIR(filestat.st_mode)) {
             memset(pBuffer, 0, sizeof(pBuffer));
-            sprintf(pBuffer, "HTTP/1.1 200 OK\r\n\r\n");
+            sprintf(pBuffer, "HTTP/1.1 200 OK\n");//\r\n\r\n");
+            sprintf(pBuffer + strlen(pBuffer), "Content-Type: text/html\r\n\r\n");
             write(hSocket, pBuffer, strlen(pBuffer));
             memset(pBuffer, 0, sizeof(pBuffer));
             DIR *dirp;
