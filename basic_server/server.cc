@@ -24,7 +24,7 @@ void extractRequest(char* pBuffer, char* path){
 }
 
 const char *getExt (const char *fspec) {
-    char *e = strrchr (fspec, '.');
+    const char *e = strrchr (fspec, '.');
     if (e == NULL)
         e = "";
     return e;
