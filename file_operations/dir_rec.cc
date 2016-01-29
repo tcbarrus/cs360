@@ -23,6 +23,7 @@ int main(int argc, char **argv)
 	}
 	if(S_ISDIR(filestat.st_mode)) {
 		cout << argv[1] << " is a directory \n";
+		cout << "HERE" << endl;
 		DIR *dirp;
 		struct dirent *dp;
 

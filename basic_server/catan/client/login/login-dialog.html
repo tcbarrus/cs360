@@ -1,0 +1,21 @@
+<template name="loginDialog">
+	<div class="shadowbox">
+		<div id="login" class="half-width">
+			<h2>Login</h2>
+			<form id="login-form" action="action">
+				<input type="text" name="loginUsername" placeholder="Username" />
+				<input type="password" name="loginPassword" placeholder="Password" />
+				<input type="submit" id="login-submit" value="Login" />
+			</form>
+		</div>
+		<div id="register" class="half-width">
+			<h2>Register</h2>
+			<form id="register-form" action="action">
+				<input type="text" name="registerUsername" placeholder="Username" />
+				<input type="password" name="registerPassword" placeholder="Password" />
+				<input type="password" name="registerVerify" placeholder="Password (Again)" />
+				<input type="submit" id="register-submit" value="Register" />
+			</form>
+		</div>
+	</div>
+</template>
