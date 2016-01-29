@@ -11,7 +11,7 @@
 #include <dirent.h>
 
 #define SOCKET_ERROR        -1
-#define BUFFER_SIZE         100
+#define BUFFER_SIZE         1024
 #define HTML                ".html"
 #define GIF                 ".gif"
 #define JPG                 ".jpg"
