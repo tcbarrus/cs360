@@ -168,6 +168,9 @@ int main(int argc, char* argv[])
         //     strcpy(path, argv[2]);
         if(stat(path, &filestat)) {
             printf("ERROR in stat\n");
+            memset(pBuffer, 0, sizeof(pBuffer));
+            sprintf(pBuffer, "HTTP/1.1 404 FILE NOT FOUND\r\n\r\n");
+            write(hSocket,pBuffer,strlen(pBuffer));
         }
         if(S_ISREG(filestat.st_mode)) {
             memset(pBuffer, 0, sizeof(pBuffer));
