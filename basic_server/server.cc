@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <dirent.h>
+#include <string>
 
 #define SOCKET_ERROR        -1
 #define BUFFER_SIZE         1024
@@ -17,6 +18,8 @@
 #define JPG                 ".jpg"
 #define QUEUE_SIZE          5
 #define MAX_PATH_SIZE       100
+
+using namespace std;
 
 void extractRequest(char* pBuffer, char* path){
     printf("GOT THIS FROM THE BROWSER: \n %s\n", pBuffer);
@@ -59,6 +62,61 @@ void setHeaders(char* pBuffer, char* path, int length){
     sprintf(pBuffer + strlen(pBuffer), "\r\n\r\n");
 }
 
+void serveFile(char* fullPath, int hSocket){
+    struct stat filestat; 
+    char pBuffer[BUFFER_SIZE];
+    if(stat(fullPath, &filestat)) {
+        printf("ERROR in stat\n");
+    }
+    if(S_ISREG(filestat.st_mode)) {
+        memset(pBuffer, 0, sizeof(pBuffer));
+        char *buffer = (char *)malloc(filestat.st_size);
+        int size = filestat.st_size;
+        if(strcmp(getExt(fullPath), JPG) == 0 || strcmp(getExt(fullPath), GIF) == 0){
+            readImage(buffer, fullPath, size);
+        }
+        else{
+            readText(buffer, fullPath, size);
+        }
+        setHeaders(pBuffer, fullPath, size);
+        write(hSocket,pBuffer,strlen(pBuffer));
+        if(strcmp(getExt(fullPath), JPG) == 0 || strcmp(getExt(fullPath), GIF) == 0){
+            write(hSocket, buffer, filestat.st_size);
+        }
+        else{
+            write(hSocket,buffer,strlen(buffer));   
+        }
+        free(buffer);
+    }
+    if(S_ISDIR(filestat.st_mode)) {
+        memset(pBuffer, 0, sizeof(pBuffer));
+        sprintf(pBuffer, "HTTP/1.1 200 OK\r\n\r\n");
+        write(hSocket, pBuffer, strlen(pBuffer));
+        memset(pBuffer, 0, sizeof(pBuffer));
+        DIR *dirp;
+        struct dirent *dp;
+        dirp = opendir(fullPath);
+
+        sprintf(pBuffer, "<html><h1>Index of %s</h1></html>\
+            <table><tbody>\
+            <tr><th valign=\"top\">Name</th></tr>", fullPath);
+        write(hSocket, pBuffer, strlen(pBuffer));
+        while ((dp = readdir(dirp)) != NULL){
+            if(strcmp(dp->d_name, "index.html") == 0){
+                //TODO: return index.html
+            }
+            //TODO dp->d_type to check if is directory
+            memset(pBuffer, 0, sizeof(pBuffer));
+            sprintf(pBuffer, "<tr>\
+                <td><a href=\"%1$s\">%1$s/</a></td></tr>", dp->d_name);
+            write(hSocket, pBuffer, strlen(pBuffer));
+        }
+        sprintf(pBuffer+strlen(pBuffer), "</tbody></table></html>");
+        write(hSocket, pBuffer, strlen(pBuffer));
+        (void)closedir(dirp);
+    }
+}
+
 void handler (int status)
 {
     printf("received signal %d\n",status);
@@ -72,19 +130,19 @@ int main(int argc, char* argv[])
     int nAddressSize=sizeof(struct sockaddr_in);
     char pBuffer[BUFFER_SIZE];
     int nHostPort;
-    struct stat filestat; 
+    string rootDir;
 
-    int rc1, rc2;
+    // int rc1, rc2;
 
-    // First set up the signal handler
-    struct sigaction sigold, signew;
-    signew.sa_handler=handler;
-    sigemptyset(&signew.sa_mask);
-    sigaddset(&signew.sa_mask,SIGINT);
-    signew.sa_flags = SA_RESTART;
-    sigaction(SIGINT,&signew,&sigold);
-    sigaction(SIGHUP,&signew,&sigold);
-    sigaction(SIGPIPE,&signew,&sigold);
+    // // First set up the signal handler
+    // struct sigaction sigold, signew;
+    // signew.sa_handler=handler;
+    // sigemptyset(&signew.sa_mask);
+    // sigaddset(&signew.sa_mask,SIGINT);
+    // signew.sa_flags = SA_RESTART;
+    // sigaction(SIGINT,&signew,&sigold);
+    // sigaction(SIGHUP,&signew,&sigold);
+    // sigaction(SIGPIPE,&signew,&sigold);
 
     if(argc < 3)
       {
@@ -94,6 +152,7 @@ int main(int argc, char* argv[])
     else
       {
         nHostPort=atoi(argv[1]);
+        rootDir=argv[2];
       }
 
     printf("\nStarting server");
@@ -159,61 +218,66 @@ int main(int argc, char* argv[])
         
         char path[MAX_PATH_SIZE];
         extractRequest(pBuffer, path);
-        printf("PATH: %s\n", path);
-        //Parse out leading /
-        memcpy(path, &path[1], sizeof(path) - 1);
-        if(strlen(path) == 0)
-            strcpy(path, argv[2]);
-        if(stat(path, &filestat)) {
-            printf("ERROR in stat\n");
-        }
-        if(S_ISREG(filestat.st_mode)) {
-            memset(pBuffer, 0, sizeof(pBuffer));
-            char *buffer = (char *)malloc(filestat.st_size);
-            int size = filestat.st_size;
-            if(strcmp(getExt(path), JPG) == 0 || strcmp(getExt(path), GIF) == 0){
-                readImage(buffer, path, size);
-            }
-            else{
-                readText(buffer, path, size);
-            }
-            setHeaders(pBuffer, path, size);
-            write(hSocket,pBuffer,strlen(pBuffer));
-            if(strcmp(getExt(path), JPG) == 0 || strcmp(getExt(path), GIF) == 0){
-                write(hSocket, buffer, filestat.st_size);
-            }
-            else{
-                write(hSocket,buffer,strlen(buffer));   
-            }
-            free(buffer);
-        }
-        if(S_ISDIR(filestat.st_mode)) {
-            memset(pBuffer, 0, sizeof(pBuffer));
-            sprintf(pBuffer, "HTTP/1.1 200 OK\r\n\r\n");
-            write(hSocket, pBuffer, strlen(pBuffer));
-            memset(pBuffer, 0, sizeof(pBuffer));
-            DIR *dirp;
-            struct dirent *dp;
-            dirp = opendir(path);
+        string fullPath = rootDir + path;
+        printf("ROOT: %s\n", rootDir.c_str());
+        printf("PATH: %s\n", fullPath.c_str());
 
-            sprintf(pBuffer, "<html><h1>Index of %s</h1></html>\
-                <table><tbody>\
-                <tr><th valign=\"top\">Name</th></tr>", path);
-            write(hSocket, pBuffer, strlen(pBuffer));
-            while ((dp = readdir(dirp)) != NULL){
-                if(strcmp(dp->d_name, "index.html") == 0){
-                    //TODO: return index.html
-                }
-                //TODO dp->d_type to check if is directory
-                memset(pBuffer, 0, sizeof(pBuffer));
-                sprintf(pBuffer, "<tr>\
-                    <td><a href=\"%1$s\">%1$s/</a></td></tr>", dp->d_name);
-                write(hSocket, pBuffer, strlen(pBuffer));
-            }
-            sprintf(pBuffer+strlen(pBuffer), "</tbody></table></html>");
-            write(hSocket, pBuffer, strlen(pBuffer));
-            (void)closedir(dirp);
-        }
+        serveFile(const_cast<char*>(fullPath.c_str()), hSocket);
+
+        //Parse out leading /
+        // memcpy(path, &path[1], sizeof(path) - 1);
+        // if(strlen(path) == 0)
+        //     strcpy(path, argv[2]);
+        // if(stat(fullPath, &filestat)) {
+        //     printf("ERROR in stat\n");
+        // }
+        // if(S_ISREG(filestat.st_mode)) {
+        //     memset(pBuffer, 0, sizeof(pBuffer));
+        //     char *buffer = (char *)malloc(filestat.st_size);
+        //     int size = filestat.st_size;
+        //     if(strcmp(getExt(fullPath), JPG) == 0 || strcmp(getExt(fullPath), GIF) == 0){
+        //         readImage(buffer, path, size);
+        //     }
+        //     else{
+        //         readText(buffer, fullPath, size);
+        //     }
+        //     setHeaders(pBuffer, fullPath, size);
+        //     write(hSocket,pBuffer,strlen(pBuffer));
+        //     if(strcmp(getExt(path), JPG) == 0 || strcmp(getExt(fullPath), GIF) == 0){
+        //         write(hSocket, buffer, filestat.st_size);
+        //     }
+        //     else{
+        //         write(hSocket,buffer,strlen(buffer));   
+        //     }
+        //     free(buffer);
+        // }
+        // if(S_ISDIR(filestat.st_mode)) {
+        //     memset(pBuffer, 0, sizeof(pBuffer));
+        //     sprintf(pBuffer, "HTTP/1.1 200 OK\r\n\r\n");
+        //     write(hSocket, pBuffer, strlen(pBuffer));
+        //     memset(pBuffer, 0, sizeof(pBuffer));
+        //     DIR *dirp;
+        //     struct dirent *dp;
+        //     dirp = opendir(fullPath);
+
+        //     sprintf(pBuffer, "<html><h1>Index of %s</h1></html>\
+        //         <table><tbody>\
+        //         <tr><th valign=\"top\">Name</th></tr>", fullPath);
+        //     write(hSocket, pBuffer, strlen(pBuffer));
+        //     while ((dp = readdir(dirp)) != NULL){
+        //         if(strcmp(dp->d_name, "index.html") == 0){
+        //             //TODO: return index.html
+        //         }
+        //         //TODO dp->d_type to check if is directory
+        //         memset(pBuffer, 0, sizeof(pBuffer));
+        //         sprintf(pBuffer, "<tr>\
+        //             <td><a href=\"%1$s\">%1$s/</a></td></tr>", dp->d_name);
+        //         write(hSocket, pBuffer, strlen(pBuffer));
+        //     }
+        //     sprintf(pBuffer+strlen(pBuffer), "</tbody></table></html>");
+        //     write(hSocket, pBuffer, strlen(pBuffer));
+        //     (void)closedir(dirp);
+        // }
         //TODO: If directory, look for index file
         //TODO: If index exists, return index
 
