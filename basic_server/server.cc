@@ -59,6 +59,11 @@ void setHeaders(char* pBuffer, char* path, int length){
     sprintf(pBuffer + strlen(pBuffer), "\r\n\r\n");
 }
 
+void handler (int status)
+{
+    printf("received signal %d\n",status);
+}
+
 int main(int argc, char* argv[])
 {
     int hSocket,hServerSocket;  /* handle to socket */
