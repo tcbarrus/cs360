@@ -71,6 +71,7 @@ int main(int argc, char* argv[])
     struct sockaddr_in Address; /* Internet socket address stuct */
     int nAddressSize=sizeof(struct sockaddr_in);
     char pBuffer[BUFFER_SIZE];
+    char* fullPath;
     int nHostPort;
     struct stat filestat; 
 
@@ -94,6 +95,7 @@ int main(int argc, char* argv[])
     else
       {
         nHostPort=atoi(argv[1]);
+        fullPath = argv[2];
       }
 
     printf("\nStarting server");
@@ -172,10 +174,10 @@ int main(int argc, char* argv[])
             char *buffer = (char *)malloc(filestat.st_size);
             int size = filestat.st_size;
             if(strcmp(getExt(path), JPG) == 0 || strcmp(getExt(path), GIF) == 0){
-                readImage(buffer, path, size);
+                readImage(buffer, fullPath, size);
             }
             else{
-                readText(buffer, path, size);
+                readText(buffer, fullPath, size);
             }
             setHeaders(pBuffer, path, size);
             write(hSocket,pBuffer,strlen(pBuffer));
@@ -194,7 +196,8 @@ int main(int argc, char* argv[])
             memset(pBuffer, 0, sizeof(pBuffer));
             DIR *dirp;
             struct dirent *dp;
-            dirp = opendir(path);
+            strcat(fullPath, path);
+            dirp = opendir(fullPath);
 
             sprintf(pBuffer, "<html><h1>Index of %s</h1></html>\
                 <table><tbody>\
