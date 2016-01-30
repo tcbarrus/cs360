@@ -10,8 +10,7 @@ OBJS =			$(SERVER) $(SAMPLE)
 
 LIBS=
 
-CCFLAGS= -g 
-#-std=c++0x
+CCFLAGS= -g -std=c++0x
 
 all:	server sample
 
