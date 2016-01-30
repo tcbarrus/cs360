@@ -4,27 +4,21 @@ CXX=			g++ $(CCFLAGS)
 
 SERVER=				server.o
 
-SAMPLE=				sample.o
-
-OBJS =			$(SERVER) $(SAMPLE)
+OBJS =			$(SERVER)
 
 LIBS=
 
 CCFLAGS= -g -std=c++0x
 
-all:	server sample
+all:	server
 
 server:$(SERVER)
 	$(CXX) -o server $(SERVER) $(LIBS)
-
-sample:$(SAMPLE)
-	$(CXX) -o sample $(SAMPLE) $(LIBS)
 
 clean:
 	rm -f $(OBJS) $(OBJS:.o)
 
 realclean:
-	rm -f $(OBJS) $(OBJS:.o) server sample
-
+	rm -f $(OBJS) $(OBJS:.o) server
 
 include	$(OBJS:.o)
