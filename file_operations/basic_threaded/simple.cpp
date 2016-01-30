@@ -4,15 +4,18 @@
 
 void *printHello(void *arg){
 	int tid;
-	tid (long)arg;
+	tid = (long)arg;
 	printf("Hello World %d\n", tid);
 }
 
 int main(){
 	#define NTHREADS 20
 
-	
+	long threadid;
 	pthread_t thread[NTHREADS];
-	int tid = 0;
-	pthread_create(&thread[0], NULL, printHello, (void *)tid);	
+	for(threadid = 0; threadid < NTHREADS; threadid++){
+		pthread_create(&thread[threadid], NULL, printHello, (void *)threadid);	
+	}
+
+	pthread_exit(NULL);
 }
