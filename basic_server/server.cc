@@ -155,11 +155,6 @@ int main(int argc, char* argv[])
 
     // int rc1, rc2;
 
-<<<<<<< HEAD
-    // // First set up the signal handler
-=======
-    // First set up the signal handler
->>>>>>> 6b9a07d226055ca26beb7f674c3480e1c75b1b9a
     // struct sigaction sigold, signew;
     // signew.sa_handler=handler;
     // sigemptyset(&signew.sa_mask);
@@ -177,11 +172,7 @@ int main(int argc, char* argv[])
     else
       {
         nHostPort=atoi(argv[1]);
-<<<<<<< HEAD
         rootDir=argv[2];
-=======
-        fullPath = argv[2];
->>>>>>> 6b9a07d226055ca26beb7f674c3480e1c75b1b9a
       }
 
     printf("\nStarting server");
@@ -247,80 +238,12 @@ int main(int argc, char* argv[])
         
         char path[MAX_PATH_SIZE];
         extractRequest(pBuffer, path);
-<<<<<<< HEAD
+
         string fullPath = rootDir + path;
         printf("ROOT: %s\n", rootDir.c_str());
         printf("PATH: %s\n", fullPath.c_str());
 
         serveFile(const_cast<char*>(fullPath.c_str()), hSocket);
-=======
-        printf("PATH: %s\n", path);
-        //Parse out leading /
-        // memcpy(path, &path[1], sizeof(path) - 1);
-        // if(strlen(path) == 0)
-        //     strcpy(path, argv[2]);
-        if(stat(path, &filestat)) {
-            printf("ERROR in stat\n");
-            memset(pBuffer, 0, sizeof(pBuffer));
-            sprintf(pBuffer, "HTTP/1.1 404 FILE NOT FOUND\r\n\r\n");
-            write(hSocket,pBuffer,strlen(pBuffer));
-        }
-        if(S_ISREG(filestat.st_mode)) {
-            memset(pBuffer, 0, sizeof(pBuffer));
-            char *buffer = (char *)malloc(filestat.st_size);
-            int size = filestat.st_size;
-            if(strcmp(getExt(path), JPG) == 0 || strcmp(getExt(path), GIF) == 0){
-                readImage(buffer, fullPath, size);
-            }
-            else{
-                readText(buffer, fullPath, size);
-            }
-            setHeaders(pBuffer, path, size);
-            write(hSocket,pBuffer,strlen(pBuffer));
-            if(strcmp(getExt(path), JPG) == 0 || strcmp(getExt(path), GIF) == 0){
-                write(hSocket, buffer, filestat.st_size);
-            }
-            else{
-                write(hSocket,buffer,strlen(buffer));   
-            }
-            free(buffer);
-        }
-        if(S_ISDIR(filestat.st_mode)) {
-            memset(pBuffer, 0, sizeof(pBuffer));
-            sprintf(pBuffer, "HTTP/1.1 200 OK\n");//\r\n\r\n");
-            sprintf(pBuffer + strlen(pBuffer), "Content-Type: text/html\r\n\r\n");
-            write(hSocket, pBuffer, strlen(pBuffer));
-            memset(pBuffer, 0, sizeof(pBuffer));
-            DIR *dirp;
-            struct dirent *dp;
-            strcat(fullPath, path);
-            dirp = opendir(fullPath);
-
-            sprintf(pBuffer, "<html><h1>Index of %s</h1></html>\
-                <table><tbody>\
-                <tr><th valign=\"top\">Name</th></tr>", path);
-            write(hSocket, pBuffer, strlen(pBuffer));
-            while ((dp = readdir(dirp)) != NULL){
-                memset(pBuffer, 0, sizeof(pBuffer));
-                if(strcmp(dp->d_name, "index.html") == 0){
-                    //TODO: return index.html
-                }
-                if(dp->d_type == 0x8){
-                    //Is file
-                    sprintf(pBuffer, "<tr><td><a href=\"%s%s\">%s</a></td></td>", path, dp->d_name, dp->d_name);
-                }
-                else{
-                    sprintf(pBuffer,"<tr><td><a href=\"%s%s/\">%s</a></td></td>", path, dp->d_name, dp->d_name);
-                }
-                write(hSocket, pBuffer, strlen(pBuffer));
-            }
-            sprintf(pBuffer+strlen(pBuffer), "</tbody></table></html>");
-            write(hSocket, pBuffer, strlen(pBuffer));
-            (void)closedir(dirp);
-        }
-        //TODO: If directory, look for index file
-        //TODO: If index exists, return index
->>>>>>> 6b9a07d226055ca26beb7f674c3480e1c75b1b9a
 
         memset(pBuffer, 0, sizeof(pBuffer));
         // linger lin;
