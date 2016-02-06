@@ -20,7 +20,7 @@
 #define JPG                 ".jpg"
 #define QUEUE_SIZE          5
 #define MAX_PATH_SIZE       100
-#define NTQUEUE             20  
+#define NQUEUE             20  
 
 using namespace std;
 

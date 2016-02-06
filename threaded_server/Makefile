@@ -8,7 +8,7 @@ OBJS =			$(SERVER)
 
 LIBS=
 
-CCFLAGS= -g -std=c++0x -lpthread
+CCFLAGS= -g -std=c++0x -lpthread -pthread
 
 all:	server
 
