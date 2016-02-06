@@ -34,6 +34,7 @@ void *howdy(void *arg){
 		sockqueue.pop();
 		int tid; 
 		tid = (long)arg;
+		std::cout << "Handled from thread " << tid << std::endl;
 		printf("HI %d\n", tid);
 	}
 }
@@ -48,16 +49,17 @@ int main(){
 	sem_init(&empty, PTHREAD_PROCESS_PRIVATE, NQUEUE);
 	sem_init(&mutex, PTHREAD_PROCESS_PRIVATE, 1);
 
-	long threadid;
 	pthread_t thread[NTHREADS];
 	for(threadid = 0; threadid < NTHREADS; threadid++){
+		std::cout << "CREATE" << std::endl;
 		pthread_create(&thread[threadid], NULL, howdy, (void *)threadid);
 	}
 
 	for(int i = 0; i < 10; i++){
 		sockqueue.push(i);
 	}
-
+	
+	while(true){}
 	// for(int i = 0; i < 10; i++){
 	// 	std::cout<<"Got "<<sockqueue.pop()<<std::endl;
 	// }
