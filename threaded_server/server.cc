@@ -26,6 +26,7 @@
 using namespace std;
 
 sem_t full, empty, mutex;
+string rootDir;
 
 void extractRequest(char* pBuffer, char* path){
     printf("GOT THIS FROM THE BROWSER: \n %s\n", pBuffer);
@@ -167,8 +168,8 @@ class myqueue {
         sem_wait(&mutex);
 
         char pBuffer[BUFFER_SIZE];
-        int socket = stlqueue.front();
-        int rval = read(socket, pBuffer, BUFFER_SIZE);
+        int hSocket = stlqueue.front();
+        int rval = read(hSocket, pBuffer, BUFFER_SIZE);
         
         char path[MAX_PATH_SIZE];
         extractRequest(pBuffer, path);
@@ -200,7 +201,6 @@ int main(int argc, char* argv[])
     char* fullPath;
     int nHostPort;
     int num_threads;
-    string rootDir;
 
     // int rc1, rc2;
 
