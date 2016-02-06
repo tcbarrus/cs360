@@ -232,7 +232,7 @@ int main(int argc, char* argv[])
     sem_init(&empty, PTHREAD_PROCESS_PRIVATE, NQUEUE);
     sem_init(&mutex, PTHREAD_PROCESS_PRIVATE, 1);
 
-    for(int i = 0; i < num_threads; i++){
+    for(threadid = 0; threadid < num_threads; threadid++){
         pthread_create(&threads[threadid], NULL, serve, (void *)threadid);  
     }
 
@@ -254,7 +254,7 @@ int main(int argc, char* argv[])
     Address.sin_family=AF_INET;
 
     printf("\nBinding to port %d",nHostPort);
-
+    
     /* bind to a port */
     if(bind(hServerSocket,(struct sockaddr*)&Address,sizeof(Address)) 
                         == SOCKET_ERROR)
