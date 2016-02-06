@@ -151,11 +151,6 @@ void *serve(void *arg){
     }
 }
 
-void handler (int status)
-{
-    printf("received signal %d\n",status);
-}
-
 class myqueue {
     queue <int> stlqueue;
     public:
@@ -189,6 +184,11 @@ class myqueue {
         return rval;
     }
 } sockqueue;
+
+void handler (int status)
+{
+    printf("received signal %d\n",status);
+}
 
 int main(int argc, char* argv[])
 {
