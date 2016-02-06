@@ -209,16 +209,16 @@ int main(int argc, char* argv[])
     int nHostPort;
     int num_threads;
 
-    // int rc1, rc2;
+    int rc1, rc2;
 
-    // struct sigaction sigold, signew;
-    // signew.sa_handler=handler;
-    // sigemptyset(&signew.sa_mask);
-    // sigaddset(&signew.sa_mask,SIGINT);
-    // signew.sa_flags = SA_RESTART;
-    // sigaction(SIGINT,&signew,&sigold);
-    // sigaction(SIGHUP,&signew,&sigold);
-    // sigaction(SIGPIPE,&signew,&sigold);
+    struct sigaction sigold, signew;
+    signew.sa_handler=handler;
+    sigemptyset(&signew.sa_mask);
+    sigaddset(&signew.sa_mask,SIGINT);
+    signew.sa_flags = SA_RESTART;
+    sigaction(SIGINT,&signew,&sigold);
+    sigaction(SIGHUP,&signew,&sigold);
+    sigaction(SIGPIPE,&signew,&sigold);
 
     if(argc < 4)
     {
@@ -301,31 +301,5 @@ int main(int argc, char* argv[])
         printf("\nGot a connection from %X (%d)\n",
               Address.sin_addr.s_addr,
               ntohs(Address.sin_port));
-        // memset(pBuffer, 0, sizeof(pBuffer));
-        // int rval = read(hSocket, pBuffer, BUFFER_SIZE);
-        
-        // char path[MAX_PATH_SIZE];
-        // extractRequest(pBuffer, path);
-
-        // string fullPath = rootDir + path;
-        // printf("ROOT: %s\n", rootDir.c_str());
-        // printf("PATH: %s\n", fullPath.c_str());
-
-        // serveFile(const_cast<char*>(fullPath.c_str()), hSocket);
-
-        // memset(pBuffer, 0, sizeof(pBuffer));
-        // linger lin;
-        // unsigned int y=sizeof(lin);
-        // lin.l_onoff=1;
-        // lin.l_linger=10;
-        // setsockopt(hSocket,SOL_SOCKET, SO_LINGER,&lin,sizeof(lin));
-        // shutdown(hSocket, SHUT_RDWR);
-        
-        // printf("\nClosing the socket");
-        // /* close socket */
-        // if(close(hSocket) == SOCKET_ERROR){
-        //  printf("\nCould not close socket\n");
-        //  return 0;
-        // }
     }
 }
