@@ -30,9 +30,12 @@ class myqueue {
 } sockqueue;
 
 void *howdy(void *arg){
-	int tid; 
-	tid = (long)arg;
-	printf("HI %d\n", tid);
+	while(1){
+		sockqueue.pop();
+		int tid; 
+		tid = (long)arg;
+		printf("HI %d\n", tid);
+	}
 }
 
 int main(){
@@ -41,15 +44,21 @@ int main(){
 	
 	long threadid;
 	pthread_t threads[NTHREADS];
-	sem_open(&full, PTHREAD_PROCESS_PRIVATE, 0);
-	sem_open(&empty, PTHREAD_PROCESS_PRIVATE, NQUEUE);
-	sem_open(&mutex, PTHREAD_PROCESS_PRIVATE, 1);
+	sem_init(&full, PTHREAD_PROCESS_PRIVATE, 0);
+	sem_init(&empty, PTHREAD_PROCESS_PRIVATE, NQUEUE);
+	sem_init(&mutex, PTHREAD_PROCESS_PRIVATE, 1);
+
+	long threadid;
+	pthread_t thread[NTHREADS];
+	for(threadid = 0; threadid < NTHREADS; threadid++){
+		pthread_create(&thread[threadid], NULL, howdy, (void *)threadid);
+	}
 
 	for(int i = 0; i < 10; i++){
 		sockqueue.push(i);
 	}
 
-	for(int i = 0; i < 10; i++){
-		std::cout<<"Got "<<sockqueue.pop()<<std::endl;
-	}
+	// for(int i = 0; i < 10; i++){
+	// 	std::cout<<"Got "<<sockqueue.pop()<<std::endl;
+	// }
 }
