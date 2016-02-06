@@ -143,15 +143,6 @@ void serveFile(char* fullPath, int hSocket){
     }
 }
 
-void *serve(void *arg){
-    while(1){
-        int tid; 
-        tid = (long)arg;
-        int socket = sockqueue.pop();
-        cout << "SERVED SOCKET " << socket << "WITH THREAD " << tid << endl;
-    }
-}
-
 class myqueue {
     queue <int> stlqueue;
     public:
@@ -185,6 +176,15 @@ class myqueue {
         return rval;
     }
 } sockqueue;
+
+void *serve(void *arg){
+    while(1){
+        int tid; 
+        tid = (long)arg;
+        int socket = sockqueue.pop();
+        cout << "SERVED SOCKET " << socket << "WITH THREAD " << tid << endl;
+    }
+}
 
 void handler (int status)
 {
