@@ -172,7 +172,7 @@ class myqueue {
         serveFile(const_cast<char*>(fullPath.c_str()), hSocket);
         stlqueue.pop();
 
-        printf("\nClosing the socket");
+        printf("\nClosing the socket\n");
         /* close socket */
         if(close(hSocket) == SOCKET_ERROR){
             printf("\nCould not close socket\n");
