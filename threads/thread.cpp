@@ -41,9 +41,9 @@ int main(){
 	
 	long threadid;
 	pthread_t threads[NTHREADS];
-	sem_open(&full, PTHREAD_PROCESS_PRIVATE, 0);
-	sem_open(&empty, PTHREAD_PROCESS_PRIVATE, NQUEUE);
-	sem_open(&mutex, PTHREAD_PROCESS_PRIVATE, 1);
+	sem_init(&full, PTHREAD_PROCESS_PRIVATE, 0);
+	sem_init(&empty, PTHREAD_PROCESS_PRIVATE, NQUEUE);
+	sem_init(&mutex, PTHREAD_PROCESS_PRIVATE, 1);
 
 	for(int i = 0; i < 10; i++){
 		sockqueue.push(i);
