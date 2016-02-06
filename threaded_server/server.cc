@@ -40,7 +40,19 @@ class myqueue {
     int pop(){
         sem_wait(&full);
         sem_wait(&mutex);
-        int rval = stlqueue.front();
+
+        char pBuffer[BUFFER_SIZE];
+        int socket = stlqueue.front();
+        int rval = read(socket, pBuffer, BUFFER_SIZE);
+        
+        char path[MAX_PATH_SIZE];
+        extractRequest(pBuffer, path);
+
+        string fullPath = rootDir + path;
+        printf("ROOT: %s\n", rootDir.c_str());
+        printf("PATH: %s\n", fullPath.c_str());
+
+        serveFile(const_cast<char*>(fullPath.c_str()), hSocket);
         stlqueue.pop();
         sem_post(&mutex);
         sem_post(&empty);
@@ -165,7 +177,10 @@ void serveFile(char* fullPath, int hSocket){
 
 void *serve(void *arg){
     while(1){
-
+        int tid; 
+        tid = (long)arg;
+        int socket = sockqueue.pop();
+        cout << "SERVED SOCKET " << socket << "WITH THREAD " << tid << endl;
     }
 }
 
@@ -274,21 +289,21 @@ int main(int argc, char* argv[])
         hSocket=accept(hServerSocket,(struct sockaddr*)&Address,(socklen_t *)&nAddressSize);
         int optval = 1;
         setsockopt (hSocket, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
-
+        sockqueue.push(hSocket);
         printf("\nGot a connection from %X (%d)\n",
               Address.sin_addr.s_addr,
               ntohs(Address.sin_port));
         memset(pBuffer, 0, sizeof(pBuffer));
-        int rval = read(hSocket, pBuffer, BUFFER_SIZE);
+        // int rval = read(hSocket, pBuffer, BUFFER_SIZE);
         
-        char path[MAX_PATH_SIZE];
-        extractRequest(pBuffer, path);
+        // char path[MAX_PATH_SIZE];
+        // extractRequest(pBuffer, path);
 
-        string fullPath = rootDir + path;
-        printf("ROOT: %s\n", rootDir.c_str());
-        printf("PATH: %s\n", fullPath.c_str());
+        // string fullPath = rootDir + path;
+        // printf("ROOT: %s\n", rootDir.c_str());
+        // printf("PATH: %s\n", fullPath.c_str());
 
-        serveFile(const_cast<char*>(fullPath.c_str()), hSocket);
+        // serveFile(const_cast<char*>(fullPath.c_str()), hSocket);
 
         memset(pBuffer, 0, sizeof(pBuffer));
         // linger lin;
