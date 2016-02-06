@@ -12,6 +12,7 @@
 #include <string>
 #include <semaphore.h>
 #include <queue>
+#include <iostream>
 
 #define SOCKET_ERROR        -1
 #define BUFFER_SIZE         1024
@@ -25,40 +26,6 @@
 using namespace std;
 
 sem_t full, empty, mutex;
-
-class myqueue {
-    queue <int> stlqueue;
-    public:
-    void push (int sock){
-        sem_wait(&empty);
-        sem_wait(&mutex);
-        stlqueue.push(sock);
-        sem_post(&mutex);
-        sem_post(&full);
-    }
-
-    int pop(){
-        sem_wait(&full);
-        sem_wait(&mutex);
-
-        char pBuffer[BUFFER_SIZE];
-        int socket = stlqueue.front();
-        int rval = read(socket, pBuffer, BUFFER_SIZE);
-        
-        char path[MAX_PATH_SIZE];
-        extractRequest(pBuffer, path);
-
-        string fullPath = rootDir + path;
-        printf("ROOT: %s\n", rootDir.c_str());
-        printf("PATH: %s\n", fullPath.c_str());
-
-        serveFile(const_cast<char*>(fullPath.c_str()), hSocket);
-        stlqueue.pop();
-        sem_post(&mutex);
-        sem_post(&empty);
-        return rval;
-    }
-} sockqueue;
 
 void extractRequest(char* pBuffer, char* path){
     printf("GOT THIS FROM THE BROWSER: \n %s\n", pBuffer);
@@ -188,6 +155,40 @@ void handler (int status)
 {
     printf("received signal %d\n",status);
 }
+
+class myqueue {
+    queue <int> stlqueue;
+    public:
+    void push (int sock){
+        sem_wait(&empty);
+        sem_wait(&mutex);
+        stlqueue.push(sock);
+        sem_post(&mutex);
+        sem_post(&full);
+    }
+
+    int pop(){
+        sem_wait(&full);
+        sem_wait(&mutex);
+
+        char pBuffer[BUFFER_SIZE];
+        int socket = stlqueue.front();
+        int rval = read(socket, pBuffer, BUFFER_SIZE);
+        
+        char path[MAX_PATH_SIZE];
+        extractRequest(pBuffer, path);
+
+        string fullPath = rootDir + path;
+        printf("ROOT: %s\n", rootDir.c_str());
+        printf("PATH: %s\n", fullPath.c_str());
+
+        serveFile(const_cast<char*>(fullPath.c_str()), hSocket);
+        stlqueue.pop();
+        sem_post(&mutex);
+        sem_post(&empty);
+        return rval;
+    }
+} sockqueue;
 
 int main(int argc, char* argv[])
 {
