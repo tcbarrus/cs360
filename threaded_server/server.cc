@@ -171,6 +171,13 @@ class myqueue {
 
         serveFile(const_cast<char*>(fullPath.c_str()), hSocket);
         stlqueue.pop();
+
+        printf("\nClosing the socket");
+        /* close socket */
+        if(close(hSocket) == SOCKET_ERROR){
+            printf("\nCould not close socket\n");
+            return 0;
+        }
         sem_post(&mutex);
         sem_post(&empty);
         return rval;
@@ -294,7 +301,7 @@ int main(int argc, char* argv[])
         printf("\nGot a connection from %X (%d)\n",
               Address.sin_addr.s_addr,
               ntohs(Address.sin_port));
-        memset(pBuffer, 0, sizeof(pBuffer));
+        // memset(pBuffer, 0, sizeof(pBuffer));
         // int rval = read(hSocket, pBuffer, BUFFER_SIZE);
         
         // char path[MAX_PATH_SIZE];
@@ -306,7 +313,7 @@ int main(int argc, char* argv[])
 
         // serveFile(const_cast<char*>(fullPath.c_str()), hSocket);
 
-        memset(pBuffer, 0, sizeof(pBuffer));
+        // memset(pBuffer, 0, sizeof(pBuffer));
         // linger lin;
         // unsigned int y=sizeof(lin);
         // lin.l_onoff=1;
@@ -314,11 +321,11 @@ int main(int argc, char* argv[])
         // setsockopt(hSocket,SOL_SOCKET, SO_LINGER,&lin,sizeof(lin));
         // shutdown(hSocket, SHUT_RDWR);
         
-        printf("\nClosing the socket");
-        /* close socket */
-        if(close(hSocket) == SOCKET_ERROR){
-         printf("\nCould not close socket\n");
-         return 0;
-        }
+        // printf("\nClosing the socket");
+        // /* close socket */
+        // if(close(hSocket) == SOCKET_ERROR){
+        //  printf("\nCould not close socket\n");
+        //  return 0;
+        // }
     }
 }

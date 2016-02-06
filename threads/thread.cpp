@@ -49,7 +49,6 @@ int main(){
 	sem_init(&empty, PTHREAD_PROCESS_PRIVATE, NQUEUE);
 	sem_init(&mutex, PTHREAD_PROCESS_PRIVATE, 1);
 
-	pthread_t thread[NTHREADS];
 	for(threadid = 0; threadid < NTHREADS; threadid++){
 		std::cout << "CREATE" << std::endl;
 		pthread_create(&thread[threadid], NULL, howdy, (void *)threadid);
