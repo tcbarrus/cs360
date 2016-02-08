@@ -1,6 +1,6 @@
 # Makefile for echo client and server
 
-CXX=			gcc $(CCFLAGS)
+CXX=			g++ $(CCFLAGS)
 
 EPOLL=				client.o
 
