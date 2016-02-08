@@ -1,4 +1,4 @@
-# Makefile for echo client and server
+# Makefile
 
 CXX=			g++ $(CCFLAGS)
 
