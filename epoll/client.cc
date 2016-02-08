@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/epoll.h>
+#include <sys/time.h>
 
 #define SOCKET_ERROR        -1
 #define BUFFER_SIZE         10000
@@ -16,6 +17,8 @@
 int  main(int argc, char* argv[])
 {
     int hSocket[NSOCKETS];                 /* handle to socket */
+    struct timeval oldtime[NSOCKETS];
+    struct timeval newtime[NSOCKETS];
     struct hostent* pHostInfo;   /* holds info about a machine */
     struct sockaddr_in Address;  /* Internet socket address stuct */
     long nHostAddress;
@@ -76,6 +79,7 @@ int  main(int argc, char* argv[])
         int ret = epoll_ctl(epollFD,EPOLL_CTL_ADD,hSocket[i],&event);
         if(ret)
             perror ("epoll_ctl");
+        gettimeofday(&oldtime[i], NULL);
     }
     for(int i = 0; i < NSOCKETS; i++) {
         struct epoll_event event;
@@ -83,6 +87,9 @@ int  main(int argc, char* argv[])
         if(rval < 0)
             perror("epoll_wait");
         read(event.data.fd,pBuffer,BUFFER_SIZE);
+        gettimeofday(&newtime[i], NULL);
+        double usec = (newtime[i].tv_sec - oldtime[i].tv_sec)*(double)1000000+(newtime[i].tv_usec-oldtime[i].tv_usec);
+        std::cout << "Time "<<usec/1000000<<std::endl;
         printf("got from %d\n",event.data.fd);
 
         printf("\nClosing socket\n");
