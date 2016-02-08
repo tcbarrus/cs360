@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <sys/epoll.h>
 #include <sys/time.h>
+#include <iostream>
 
 #define SOCKET_ERROR        -1
 #define BUFFER_SIZE         10000
