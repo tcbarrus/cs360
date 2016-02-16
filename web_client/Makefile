@@ -8,7 +8,7 @@ OBJS =			$(SERVER) $(CLIENT)
 
 LIBS=
 
-CCFLAGS= -g
+CCFLAGS= -g -std=c++11
 
 all:	client
 
