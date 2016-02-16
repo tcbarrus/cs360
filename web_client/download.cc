@@ -69,6 +69,11 @@ int  main(int argc, char* argv[])
 
         /* get IP address from name */
         pHostInfo=gethostbyname(strHostName);
+
+        if(pHostInfo == 0){
+            printf("\nNonexistant host\n");
+            exit(1);
+        }
         /* copy address into long */
         memcpy(&nHostAddress,pHostInfo->h_addr,pHostInfo->h_length);
 
@@ -78,7 +83,6 @@ int  main(int argc, char* argv[])
         Address.sin_family=AF_INET;
 
         //printf("\nConnecting to %s (%lX) on port %d",strHostName,nHostAddress,nHostPort);
-
         /* connect to host */
         if(connect(hSocket,(struct sockaddr*)&Address,sizeof(Address)) 
            == SOCKET_ERROR)
@@ -104,6 +108,7 @@ int  main(int argc, char* argv[])
             response.append(pBuffer);
             memset(pBuffer, 0, BUFFER_SIZE);
         }
+
         //printf("Response: \n%s", response.c_str());
         int index = response.find("\r\n\r\n") + 4;
         string header = response.substr(0, index);
