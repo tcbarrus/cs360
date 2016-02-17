@@ -9,6 +9,7 @@
 #include <sys/epoll.h>
 #include <sys/time.h>
 #include <iostream>
+#include <math.h>
 
 #define SOCKET_ERROR        -1
 #define BUFFER_SIZE         10000
@@ -48,6 +49,7 @@ int  main(int argc, char* argv[])
     int hSocket[count];                 /* handle to socket */
     struct timeval oldtime[count];
     struct timeval newtime[count];
+    double responseTimes[count];
     struct hostent* pHostInfo;   /* holds info about a machine */
     struct sockaddr_in Address;  /* Internet socket address stuct */
     long nHostAddress;
@@ -108,12 +110,13 @@ int  main(int argc, char* argv[])
         read(event.data.fd,pBuffer,BUFFER_SIZE);
         gettimeofday(&newtime[i], NULL);
         double usec = (newtime[i].tv_sec - oldtime[i].tv_sec)*(double)1000000+(newtime[i].tv_usec-oldtime[i].tv_usec);
+        responseTimes[i] = usec;
         sumTime += usec;
         if(debug)
             std::cout << "Time "<<usec/1000000<<std::endl;
-        printf("got from %d\n",event.data.fd);
+        // printf("got from %d\n",event.data.fd);
 
-        printf("\nClosing socket\n");
+        // printf("\nClosing socket\n");
         /* close socket */                       
         if(close(hSocket[i]) == SOCKET_ERROR)
         {
@@ -121,6 +124,15 @@ int  main(int argc, char* argv[])
             return 0;
         }
     }
+    //Calculate average time and standard deviation
     double averageTime = sumTime/count;
-    std::cout << "Average Time Per Request: " << sumTime/1000000 << std::endl;
+    double differenceSum = 0;
+    for(int i = 0; i < count; i++){
+        double diff = pow(responseTimes[i] - averageTime, 2);
+        differenceSum += diff;
+    }
+    double meanDiff = differenceSum/count;
+    double standardDeviation = sqrt(meanDiff);
+    std::cout << "Average Time Per Request: " << averageTime/1000000 << std::endl;
+    std::cout << "Standard Deviation: " << standardDeviation/1000000 << std::endl;
 }
