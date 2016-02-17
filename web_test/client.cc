@@ -53,8 +53,9 @@ int  main(int argc, char* argv[])
     long nHostAddress;
     char pBuffer[BUFFER_SIZE];
     unsigned nReadAmount;
+    double sumTime = 0;
 
-    printf("\nMaking a socket");
+    printf("\nMaking a socket\n");
     /* make a socket */
     for(int i = 0; i < count; i++) {
         hSocket[i]=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
@@ -107,6 +108,7 @@ int  main(int argc, char* argv[])
         read(event.data.fd,pBuffer,BUFFER_SIZE);
         gettimeofday(&newtime[i], NULL);
         double usec = (newtime[i].tv_sec - oldtime[i].tv_sec)*(double)1000000+(newtime[i].tv_usec-oldtime[i].tv_usec);
+        sumTime += usec;
         if(debug)
             std::cout << "Time "<<usec/1000000<<std::endl;
         printf("got from %d\n",event.data.fd);
@@ -119,4 +121,6 @@ int  main(int argc, char* argv[])
             return 0;
         }
     }
+    double averageTime = sumTime/count;
+    std::cout << "Average Time Per Request: " << sumTime/1000000 << std::endl;
 }
