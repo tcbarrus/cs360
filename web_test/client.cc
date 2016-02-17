@@ -19,6 +19,10 @@ int  main(int argc, char* argv[])
 {
     int count;
     bool debug = false;
+    int option;
+    char strHostName[HOST_NAME_SIZE];
+    int nHostPort;
+    string url;
 
     while ((option = getopt(argc,argv,"d")) != -1) {
         switch (option) {
@@ -49,8 +53,6 @@ int  main(int argc, char* argv[])
     long nHostAddress;
     char pBuffer[BUFFER_SIZE];
     unsigned nReadAmount;
-    char strHostName[HOST_NAME_SIZE];
-    int nHostPort;
 
     printf("\nMaking a socket");
     /* make a socket */
