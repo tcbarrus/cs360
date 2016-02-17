@@ -22,7 +22,7 @@ int  main(int argc, char* argv[])
     int option;
     char strHostName[HOST_NAME_SIZE];
     int nHostPort;
-    string url;
+    std::string url;
 
     while ((option = getopt(argc,argv,"d")) != -1) {
         switch (option) {
