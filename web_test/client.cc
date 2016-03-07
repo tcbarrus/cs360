@@ -57,7 +57,7 @@ int  main(int argc, char* argv[])
     unsigned nReadAmount;
     double sumTime = 0;
 
-    printf("\nMaking a socket\n");
+    // printf("\nMaking a socket\n");
     /* make a socket */
     for(int i = 0; i < count; i++) {
         hSocket[i]=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
