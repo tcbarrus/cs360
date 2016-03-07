@@ -11,7 +11,7 @@ router.get('/getcity', function(req,res,next){
 		if(err) throw err;
 		var cities = data.toString().split("\n");
 		var myRe = new RegExp("^" + req.query.q);
-		console.log(meRe);
+		console.log(myRe);
 		var json = [];
 		for(var i = 0; i < cities.length; i++){
 			var result = cities[i].search(myRe);

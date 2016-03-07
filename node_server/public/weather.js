@@ -1,7 +1,7 @@
 $(document).ready(function(){
 	$(document).on('input', '#cityInput', function(){
-		// var url = "https://students.cs.byu.edu/~clement/CS360/ajax/getcity.cgi?q="+$("#cityInput").val();
 		var url = '../getcity?q='+$('#cityInput').val();
+		console.log(url);
 		$.getJSON(url,function(data){
 			$("ul").empty();
 			$.each(data, function(){
