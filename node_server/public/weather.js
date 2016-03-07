@@ -1,7 +1,6 @@
 $(document).ready(function(){
 	$(document).on('input', '#cityInput', function(){
 		var url = '../getcity?q='+$('#cityInput').val();
-		console.log(url);
 		$.getJSON(url,function(data){
 			$("ul").empty();
 			$.each(data, function(){
@@ -15,7 +14,6 @@ $(document).ready(function(){
 		var value = $('#cityInput').val();
 		$('#cityField').val(value);
 		var url = 'https://api.wunderground.com/api/8f637350ea6ec6af/geolookup/conditions/q/UT/' + value + '.json'; 
-		console.log(url);
 		$.ajax({
 			url: url,
 			dataType: 'jsonp',
