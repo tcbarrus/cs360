@@ -50,7 +50,8 @@ $(document).ready(function(){
 		});
 
 		$.ajax({
-			url: 'http://touringplans.com/magic-kingdom/attractions.json',
+			url: 'http://randomimage.setgetgo.com/get.php',
+			type: 'GET',
 			dataType: 'json',
 			success: function(data){
 				console.log(data);
