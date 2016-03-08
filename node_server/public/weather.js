@@ -10,7 +10,7 @@ $(document).ready(function(){
 		});
 	});
 
-	$(document).on('click', 'button', function(){
+	$(document).on('click', '#citySubmit', function(){
 		var value = $('#cityInput').val();
 		$('#cityField').val(value);
 		var url = 'https://api.wunderground.com/api/8f637350ea6ec6af/geolookup/conditions/q/UT/' + value + '.json'; 
@@ -29,32 +29,21 @@ $(document).ready(function(){
 		});
 	});
 
-	$(document).on('change', 'select', function(){
-		var $id = $('select').val();
-		var $url = 'http://imdb.wemakesites.net/api/' + $id;
+	$(document).on('click', '#catSubmit', function(){
 		$.ajax({
-			url: $url,
-			dataType: 'jsonp',
-			success: function(data){
-				console.log(data);
-				$('#movieInfo').empty();
-				var $title = $('<h2></h2>').text($('select option:selected').text());
-				var $rating = $('<p></p>').text(data['data']['review']['rating']);
-				var $description = $('<p></p>').text(data['data']['description']);
-				var $img = $('<img/>', {src: data['data']['image']});
-				$('#movieInfo').append($title);
-				$('#movieInfo').append($rating);
-				$('#movieInfo').append($description);
-				$('#movieInfo').append($img);
-			}
-		});
-
-		$.ajax({
-			url: 'http://randomimage.setgetgo.com/get.php',
+			url: 'http://thecatapi.com/api/images/get?format=xml&results_per_page=20',
 			type: 'GET',
-			dataType: 'json',
+			dataType: 'xml',
 			success: function(data){
-				console.log(data);
+				$('#movieInfo').empty();
+				var imgUrl = $(data).find("url");
+				var $img = $('<img/>', {src: imgUrl[0].innerHTML});
+				var $title = $('<h2></h2>').text('Cat Pic of the Day');
+				$('#movieInfo').append($title);
+				$('#movieInfo').append($img);
+			},
+			error: function(err){
+				console.log(err);
 			}
 		})
 	});
