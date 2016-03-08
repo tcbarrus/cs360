@@ -48,5 +48,13 @@ $(document).ready(function(){
 				$('#movieInfo').append($img);
 			}
 		});
+
+		$.ajax({
+			url: 'http://touringplans.com/magic-kingdom/attractions.json',
+			dataType: 'json',
+			success: function(data){
+				console.log(data);
+			}
+		})
 	});
 });
