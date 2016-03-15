@@ -21,8 +21,11 @@ $(document).ready(function(){
 		console.log(data);
 		var everything = "<ul>";
 		for(var comment in data){
+			var red = Math.floor(Math.random() * 256);
+			var green = Math.floor(Math.random() * 256);
+			var blue = Math.floor(Math.random() * 256);
 			com = data[comment];
-			everything += "<li>Name: "+com.Name+" -- Comment: "+com.Comment+"</li>";
+			everything += "<li style='background-color: rgba("+red+","+green+","+blue+", 0.5)'>Name: "+com.Name+" -- Comment: "+com.Comment+"</li>";
 		}
 		everything += "</ul>";
 		$("#comments").html(everything);
